@@ -1,6 +1,7 @@
 HELP.md
 /target/
 !.mvn/wrapper/maven-wrapper.jar
+/spring-boot-thymeleaf-fragments-master
 
 ### STS ###
 .apt_generated

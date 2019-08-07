@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:with="http://www.thymeleaf.org/extras/with"
+      layout:decorate="~{layout}"
+      with:title="Home">
+<th:block layout:fragment="body_end">
+    <div class="container">
+    <br class="row"></br>
+        <h3>DataWeaves:-></h3>
+        <dd> - DataWeave is the MEL(Mule Expression Language) for accessing and transforming data that travels through a Mule application.
+            DataWeave is tightly integrated with the Mule runtime engine, Which runs the scripts and expressions in Mule application. DataWeave
+            scripts act on data in the Mule event. Most commonly, you use it to access and transform data format in the message payload.
+            For eg. after a component in your application retrieves data from one system, you can use DataWeave to modify data to a new format.
+            then use another component in your application to pass on that  data to another system as input data.</dd>
+        <h3>Dataweave functions:-></h3></br>
+        <h4>1)Selector function:-></h4>
+        Selectors extract values from within DataWeave Object for eg. </br>
+       <pre class="card"><code>
+            %dw 2.0
+           var myObject = { "myKey" : "1234", "name" : "somebody" }
+            var myArray = [ { "myKey" : "1234" }, { "name" : "somebody" } ]
+            output application/json
+            ---
+            {
+                selectingValueUsingKeyInObject : myObject.name,
+                selectingValueUsingKeyOfObjectInArray : myArray.name,
+            }
+        </code></pre>
+        <h4>2)Single-Value Selector function:-></h4></br>
+        Single-Value selector function return the value of the matching key for eg.</br>
+        <pre class="card"><code>
+            %dw 2.0
+            var myObject = { user : "a" }
+            output application/json
+            ---
+            {
+                myObjectExample : myObject.user
+            }
+        </code> </pre>
+        <h4>3)Key-Value Pair Selector function:-></h4>
+        The & selector acts on array and object & retrieve both the keys and values of all the
+        matching keys pairs in the current context. These are returns as an object.</br>
+        <pre class="card"><code>
+            %dw 2.0
+            output application/xml
+            ---
+            {
+               users: payload.users.&user
+            }
+        </code></pre>
+        <h4>4)Range Selector function:-></h4>
+        Range selector limit the output to only the elements specified by the range
+        <pre class="card"><code>
+            %dw 2.0
+            output application/json
+            ---
+            {
+              slice: [0,1,2][0 to 1],
+              last: [0,1,2][-1 to 0]
+            }
+        </code></pre>
+        <h4>5)XML Attribute Selector function:-></h4>
+        .@var-name selects an attribute in an XML elements
+        <pre class="card">
+            <code>
+                %dw 2.0
+            var myVar = read('<product id="1" type="electronic">
+              <brand>SomeBrand</brand> </product>', 'application/xml')
+            output application/json
+            ---
+            {
+              item: [
+                {
+                  "type" : myVar.product.@."type",
+                  "name" : myVar.product.brand,
+                  "attributes": myVar.product.@
+                }
+              ]
+            }
+            </code>
+        </pre>
+        <h4>6)Name-space Selector function:-></h4>
+          # returns the XML namespace of a selected key
+        <pre class="card">
+            <code>
+                %dw 2.0
+                output application/json
+                ---
+                payload.order.#
+            </code>
+        </pre>
+        <h4>7)Key Present Validator:-></h4>
+        Return true if the specified key is present in the object or as an attribute of an XML element.
+        <pre class="card">
+            <code>
+                %dw 2.0
+                output application/xml
+                ---
+                present: payload.name?
+            </code>
+        </pre>
+        <h4>8)Filter Selectors functions:-></h4>
+        <code>key-name[?($=="value")]</code> returns only the values of matching keys within an array
+        or object. Note that ? is also used. If no key-value pairs match then result is null
+        <pre class="card">
+            <code>
+                %dw 2.0
+                output application/json
+                ---
+                { users: payload.users.*name[?($ == "Mariano")] }
+            </code>
+        </pre>
+        <h4>9)Map function:-></h4>
+        map function iterates over the array on the left to apply lambda on the right to elements
+        in that array.
+        <pre class="card">
+            <code>
+                %dw 2.0
+                output application/json
+                ---
+                {
+                  (
+                    ["a", "b", "c"] map ((value, index) -> {
+                        (index): value
+                    })
+                  )
+                }
+            </code>
+        </pre>
+        <h4>10)pluck values:-></h4>
+        pluck function to iterate over values in a JSON object and output those values into
+        an array.
+        <pre class="card">
+            <code>
+                %dw 2.0
+                output application/json
+                ---
+                {
+                  "0": "a",
+                  "1": "b",
+                  "2": "c"
+                } pluck ((value) -> value)
+            </code>
+        </pre>
+    </div>
+</th:block>
+</html>
